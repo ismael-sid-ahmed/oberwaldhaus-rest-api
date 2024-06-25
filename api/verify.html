@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Verification</title>
+    <script>
+        // Function to extract URL parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        async function verify() {
+            const mode = getQueryParam('hub.mode');
+            const token = getQueryParam('hub.verify_token');
+            const challenge = getQueryParam('hub.challenge');
+
+            if (mode && token) {
+                // Fetch the verification token from the config JSON
+                const response = await fetch('config.json');
+                const config = await response.json();
+
+                if (mode === 'subscribe' && token === config.verify_token) {
+                    // Respond with the challenge token from the request
+                    document.body.innerText = challenge;
+                } else {
+                    // Respond with '403 Forbidden' if tokens do not match
+                    document.body.innerText = '403 Forbidden';
+                }
+            } else {
+                // Missing required query parameters
+                document.body.innerText = '400 Bad Request';
+            }
+        }
+
+        window.onload = verify;
+    </script>
+</head>
+<body>
+    Verifying...
+</body>
+</html>
