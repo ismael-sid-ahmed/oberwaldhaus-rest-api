@@ -5,12 +5,12 @@ export default function handler(req, res) {
     const mode = query['hub.mode'];
     const token = query['hub.verify_token'];
     const challenge = query['hub.challenge'];
-    const VERIFY_TOKEN = process.env.MY_VERIFY_TOKEN;
+    const VERIFY_TOKEN = process.env.MY_VERIFY_TOKEN; // Set this in your environment
   
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
       res.status(200).send(challenge);
     } else {
-      res.status(200).end();
+      res.status(403).end();
     }
   }
   
